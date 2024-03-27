@@ -57,7 +57,7 @@ jobs:
         run: cd starter/frontend && npm test
 
       - name: Debug message is TRUE
-        if: env.DEBUG == 'true'
+        #if: env.DEBUG == 'true'
         run: echo "${{ vars.ECR_REPOSITORY}}"
 
 
