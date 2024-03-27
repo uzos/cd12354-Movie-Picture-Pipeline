@@ -3,7 +3,7 @@ on:
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
 
-environment: development
+
 env:
   AWS_REGION:  ${{ vars.AWS_REGION }}    # Update this to your AWS Region
   TF_ACTION_WORKING_DIR: 'setup/terraform' # Update this to your Terraform files directory
