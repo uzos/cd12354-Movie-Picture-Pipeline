@@ -23,7 +23,7 @@ on:
 env:
   # Setting an environment variable with the value of a configuration variable
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY}}
-  AWS_REGION: ${{ env.AWS_REGION}}
+  AWS_REGION: ${{ vars.AWS_REGION}}
 #Jobs defined in the workflow
 jobs:
   frontend-lint-and-test-job:
