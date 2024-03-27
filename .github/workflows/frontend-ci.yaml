@@ -19,14 +19,15 @@ on:
 #env:
   #AWS_REGION: ${{ env.AWS_REGION }}
   #DEBUG: true
+environment: development
 env:
   # Setting an environment variable with the value of a configuration variable
-  #env_var: ${{ vars.ENV_CONTEXT_VAR }}
-# Jobs defined in the workflow
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY}}
+  AWS_REGION: ${{ env.AWS_REGION}}
+#Jobs defined in the workflow
 jobs:
   frontend-lint-and-test-job:
-    environment: development
+    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -128,9 +129,7 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        #with:
-        #mask-password: 'false'
-      #below added
+    
 
       - name: Build and push
         id: build-and-push
@@ -145,7 +144,8 @@ jobs:
           file: starter/frontend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/cd12354-movie-picture-pipeline:${{ steps.vars.outputs.sha_short }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }}
+          #tags: ${{ steps.login-ecr.outputs.registry }}/cd12354-movie-picture-pipeline:${{ steps.vars.outputs.sha_short }}
            # ${{ github.sha }}
             #${{ steps.vars.outputs.sha_short }}
           # outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
