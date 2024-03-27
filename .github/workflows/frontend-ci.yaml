@@ -32,7 +32,7 @@ jobs:
           node-version: latest
           
       - name: Print message - ECR
-        run: echo ${{ env.ECR_REPOSITORY}}
+        run: echo ${{ vars.ECR_REPOSITORY}}
 
       - name: Cache NPM dependencies
         uses: actions/cache@v2
