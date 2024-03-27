@@ -39,6 +39,11 @@ jobs:
       - name: Print message - ECR
         run: echo ${{ vars.ECR_REPOSITORY}}
 
+      - name: Print message - AI
+        run: echo "The region is: ${{ env.AWS_REGION}}"
+      - name: Print message - Google
+        run: echo "The region is: ${{ vars.AWS_REGION}}"
+
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
