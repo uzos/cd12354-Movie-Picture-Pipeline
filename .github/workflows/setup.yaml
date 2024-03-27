@@ -5,7 +5,7 @@ on:
 
 
 env:
-  AWS_REGION:  ${{ env.AWS_REGION }}    # Update this to your AWS Region
+  AWS_REGION:  ${{ vars.AWS_REGION }}    # Update this to your AWS Region
   TF_ACTION_WORKING_DIR: 'setup/terraform' # Update this to your Terraform files directory
 
 jobs:
