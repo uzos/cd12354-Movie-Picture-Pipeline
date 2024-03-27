@@ -18,6 +18,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  DEBUG: true
 # Jobs defined in the workflow
 jobs:
   frontend-lint-and-test-job:
@@ -55,9 +56,9 @@ jobs:
       - name: Run tests
         run: cd starter/frontend && npm test
 
-      - name: Debug message
-        if: env.DEBUG == 'true'
-        run: echo "Debugging is enabled."
+      - name: Debug message is TRUE
+        #if: env.DEBUG == 'true'
+        run: echo "${{ vars.ECR_REPOSITORY}}"
 
 
     
