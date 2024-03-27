@@ -9,9 +9,11 @@ env:
   TF_ACTION_WORKING_DIR: 'setup/terraform' # Update this to your Terraform files directory
 
 jobs:
+ 
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    environment: development
 
     steps:
       # Check out the code to the runner

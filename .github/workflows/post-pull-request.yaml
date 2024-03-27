@@ -2,14 +2,16 @@
 name: Pull Request Target
 on:
   pull_request_target:
-    types: [opened]
+    types: [closed]
 
 jobs:
   post-pull-request-close:
     runs-on: ubuntu-latest
     steps:
-    - uses: superbrothers/close-pull-request@v3
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        # Optional. Post a issue comment just before closing a pull request.
-        comment: "Thanks for raising PR to main branch"
+      - name: Reject if it is not from main
+        if: ${{ github.head_ref != 'feature/ci-cd-pipeline' }} && ${{ github.event.action == 'pull_request_target' }}
+        uses: superbrothers/close-pull-request@v3
+          with:
+            repo-token: ${{ secrets.GITHUB_TOKEN }}
+            # Optional. Post a issue comment just before closing a pull request.
+            comment: "Thanks for raising PR to main branch"
