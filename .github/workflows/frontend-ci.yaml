@@ -21,8 +21,9 @@ on:
   #DEBUG: true
 env:
   # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
+  #env_var: ${{ vars.ENV_CONTEXT_VAR }}
 # Jobs defined in the workflow
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY}}
 jobs:
   frontend-lint-and-test-job:
     environment: development
@@ -43,6 +44,8 @@ jobs:
         run: echo  ${{ env.AWS_REGION}}
       - name: Print message - Google
         run: echo  ${{ vars.AWS_REGION}}
+      - name: Print message - AWS-ECR_REPOSITORY
+        run: echo  $ECR_REPOSITORY
 
       - name: Cache NPM dependencies
         uses: actions/cache@v2
