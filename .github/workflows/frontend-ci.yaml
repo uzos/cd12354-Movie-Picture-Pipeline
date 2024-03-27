@@ -76,6 +76,7 @@ jobs:
 
     
   frontend-build-job:
+    environment: development
     runs-on: ubuntu-latest
     needs: frontend-lint-and-test-job #dependent job
     steps:
