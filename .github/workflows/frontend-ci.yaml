@@ -146,7 +146,7 @@ jobs:
           file: starter/frontend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ ECR_REPOSITORY }}:${{IMAGE_TAG}}
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{IMAGE_TAG}}
           #tags: ${{ steps.login-ecr.outputs.registry }}/cd12354-movie-picture-pipeline:${{ steps.vars.outputs.sha_short }}
            # ${{ github.sha }}
             #${{ steps.vars.outputs.sha_short }}
