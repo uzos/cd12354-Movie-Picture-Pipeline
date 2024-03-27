@@ -119,7 +119,8 @@ jobs:
           mask-aws-account-id: 'false'
 
       #Docker setup for deployment
-    
+      - name: Print Frontend Build- AWS-ECR_REPOSITORY
+        run: echo  $ECR_REPOSITORY
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -145,7 +146,7 @@ jobs:
           file: starter/frontend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ ECR_REPOSITORY }}:${{ steps.vars.outputs.sha_short }}
           #tags: ${{ steps.login-ecr.outputs.registry }}/cd12354-movie-picture-pipeline:${{ steps.vars.outputs.sha_short }}
            # ${{ github.sha }}
             #${{ steps.vars.outputs.sha_short }}
