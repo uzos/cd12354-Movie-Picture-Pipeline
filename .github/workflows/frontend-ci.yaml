@@ -16,12 +16,16 @@ on:
     branches:
       - main
 
+#env:
+  #AWS_REGION: ${{ env.AWS_REGION }}
+  #DEBUG: true
 env:
-  AWS_REGION: us-east-1
-  DEBUG: true
+  # Setting an environment variable with the value of a configuration variable
+  env_var: ${{ vars.ENV_CONTEXT_VAR }}
 # Jobs defined in the workflow
 jobs:
   frontend-lint-and-test-job:
+    environment: development
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,6 +38,11 @@ jobs:
           
       - name: Print message - ECR
         run: echo ${{ vars.ECR_REPOSITORY}}
+
+      - name: Print message - AI
+        run: echo  ${{ env.AWS_REGION}}
+      - name: Print message - Google
+        run: echo  ${{ vars.AWS_REGION}}
 
       - name: Cache NPM dependencies
         uses: actions/cache@v2
