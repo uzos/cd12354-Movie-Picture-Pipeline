@@ -11,8 +11,8 @@ RUN mkdir -p src
 COPY package*.json .
 
 #Option 1
-COPY public/ /app/public
-COPY src/ /app/src
+COPY public /app/
+COPY src /app/
 #Option 2
 #COPY src/ /app/src/
 #COPY public/ /app/public/
