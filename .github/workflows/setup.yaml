@@ -12,7 +12,6 @@ env:
   TF_ACTION_WORKING_DIR: 'setup/terraform' # Update this to your Terraform files directory
 
 jobs:
- 
   terraform:
     #name: 'Terraform'
       defaults:
