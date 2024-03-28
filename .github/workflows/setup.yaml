@@ -13,10 +13,10 @@ env:
 
 jobs:
   terraform:
-    #name: 'Terraform'
-      defaults:
-        run:
-          working-directory: ${{env.TF_ACTION_WORKING_DIR}}
+    name: 'Terraform'
+    defaults:
+      run:
+        working-directory: ${{env.TF_ACTION_WORKING_DIR}}
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     environment: development
 
