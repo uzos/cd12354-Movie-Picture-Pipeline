@@ -22,7 +22,7 @@ jobs:
       - name: Print message - AI
         run: echo  ${{ env.AWS_REGION}}
       - name: Print message - Google
-        run: echo  ${{ vars.AWS_REGION}}
+        run: echo  ${{vars.AWS_REGION}}
     
 
       - name: Checkout code
