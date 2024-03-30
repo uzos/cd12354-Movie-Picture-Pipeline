@@ -18,7 +18,7 @@ on:
 env:
   # Setting an environment variable with the value of a configuration variable
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY}}
-  REACT_APP_MOVIE_API_URL: ${{var.REACT_APP_MOVIE_API_URL}}
+  REACT_APP_MOVIE_API_URL: ${{vars.REACT_APP_MOVIE_API_URL}}
   AWS_REGION: ${{ vars.AWS_REGION}}
 #Jobs defined in the workflow
 jobs:
@@ -57,7 +57,7 @@ jobs:
 
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
         #if: github.ref == 'refs/heads/main'
-        run: cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
+        run: cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=mp-frontend:latest .
 
       # - name: Run docker image
       #  run: docker run --name mp-frontend -p 3000:3000 -d mp-frontend
