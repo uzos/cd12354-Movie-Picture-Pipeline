@@ -25,8 +25,7 @@ env:
 
 # Jobs defined in the workflow
 jobs:
-  call-frontend-cd-lint-and-test-job:
-          uses: ./.github/workflows/frontend-lint-test-resuable.yaml
+
   
   frontend-cd-build-job:
     needs: frontend-cd-lint-and-test-job #dependent job
