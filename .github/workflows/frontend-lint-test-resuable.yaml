@@ -16,8 +16,8 @@ jobs:
       sha_short: ${{ steps.git-sha.outputs.sha_short }}
     steps:
 
-      - name: Print message - ECR
-        run: echo ${{ vars.ECR_REPOSITORY}}
+      - name: Print message - ECR_REPOSITORY_FRONTEND
+        run: echo ${{ vars.ECR_REPOSITORY_FRONTEND}}
 
       - name: Print message - AI
         run: echo  ${{ env.AWS_REGION}}
