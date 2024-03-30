@@ -1,4 +1,4 @@
-name: Frondend Lint Test Workflow
+name: Reusable Frondend Lint and Test Workflow
 
 on:
   workflow_call:
