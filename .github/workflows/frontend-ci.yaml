@@ -56,8 +56,9 @@ jobs:
 
 
 
-      #- name: Print message - reusable-lint-and-test-job.outputs.sha_short
-       # run: echo  ${{call-frontend-cd-lint-and-test-job.outputs.sha_short}}
+      - name: Print message - reusable-lint-and-test-job.outputs.sha_short
+        #run: echo  ${{call-frontend-cd-lint-and-test-job.outputs.sha_short}}
+        run: echo  ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
 
        #Configure AWS credentials
       - name: Configure AWS credentials
