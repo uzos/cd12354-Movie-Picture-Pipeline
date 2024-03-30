@@ -27,13 +27,7 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: "Apply TF"
-        permissions:
-            pull-requests: write
-            contents: read
-        defaults:
-            run:
-                working-directory: ./iac
+ 
       - name: Set Terraform
         uses: actions/checkout@v3
       - name: Setup Terraform
