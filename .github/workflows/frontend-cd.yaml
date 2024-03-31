@@ -35,9 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     #needs: frontend-cd-lint-and-test-job #Only run job if frondend Lint and Test pass
     steps:
-       - name: AWS Setup
-         id: aws-setup
-         uses: ./.github/workflows/aws-setup.yaml
+      - name: AWS Setup
+        id: aws-setup
+        uses: ./.github/workflows/aws-setup.yaml
   
 
       #Setup docker 
