@@ -24,6 +24,8 @@ jobs:
   aws-setup-job:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       #Login to AWS using secrets
       - name: AWS Login
         uses: aws-actions/configure-aws-credentials@v4
