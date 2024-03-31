@@ -31,7 +31,7 @@ jobs:
   
   frontend-cd-build-job:
     needs: frontend-cd-lint-and-test-job #dependent job
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     #needs: frontend-cd-lint-and-test-job #Only run job if frondend Lint and Test pass
     steps:
