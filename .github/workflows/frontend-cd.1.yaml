@@ -1,43 +1,44 @@
 # Workflow name
 name: Frontend Continuous Deployment
-#needs: [frontend-cd-test-and-build]
+needs: [frontend-cd-test-and-build]
 
 # Triggers for the workflow
 on:
   # Manual trigger using the workflow_dispatch event
-  #workflow_dispatch:
-  workflow_run:
-    workflows: ["Frontend Continuous Integration"]
+  workflow_dispatch:
+
+  # Automatic trigger on push events to the main branch
+
+  pull_request:
     types:
-      - completed
-
-
-
-  
+      - closed
+    branches: 
+      - main
 
 env:
-    #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-   # AWS_REGION: ${{ vars.AWS_REGION }}
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+    AWS_REGION: ${{ secrets.AWS_REGION }}
     ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_FRONTEND}}
     REACT_APP_MOVIE_API_URL: $${{vars.REACT_APP_MOVIE_API_URL}}
 
 # Jobs defined in the workflow
 jobs:
-  frontend-cd-lint-and-test-job:
-    uses: ./.github/workflows/frontend-lint-test-resuable.yaml
-  aws-setup:
-    uses: ./.github/workflows/aws-setup.yaml
-
+  call-frontend-cd-lint-and-test-job:
+          uses: ./.github/workflows/frontend-lint-test-resuable.yaml
   
   frontend-cd-build-job:
-    needs: frontend-cd-lint-and-test-job,aws-setup #dependent job
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: frontend-cd-lint-and-test-job #dependent job
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    #needs: frontend-cd-lint-and-test-job #Only run job if frondend Lint and Test pass
     steps:
-     
-  
+
+      - name: Get Git Sha
+        id: git-sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+
 
       #Setup docker 
       - name: Login to Docker Hub
@@ -49,13 +50,25 @@ jobs:
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
         if: github.ref == 'refs/heads/main'
         env:
-          ECR_REGISTRY: ${{ needs.aws-setup.outputs.ecr_registry }}
-          IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ steps.git-sha.outputs.sha_short }}
         run: cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
          #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }} -f .
 
-   
+      - name: Configure AWS credentials
+      #Login to AWS using secrets
+
+      - name: AWS Login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push image to Amazon ECR
         env:

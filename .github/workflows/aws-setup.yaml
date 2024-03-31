@@ -1,0 +1,41 @@
+# Workflow name
+name: AWS Login Workflow
+
+# Triggers for the workflow
+on:
+  
+  workflow_call:
+    # Map the workflow outputs to job outputs
+  
+    outputs: 
+      ecr_registry:
+        description: "Shot Got Sha"
+        value: ${{ steps.login-ecr.outputs.registry }}
+
+env:
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_REGION: ${{ secrets.AWS_REGION }}
+  
+
+# Jobs defined in the workflow
+jobs:
+
+  aws-setup-job:
+    runs-on: ubuntu-latest
+    steps:
+      #Login to AWS using secrets
+      - name: AWS Login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+
+    
