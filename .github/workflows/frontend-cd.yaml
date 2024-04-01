@@ -18,7 +18,8 @@ on:
 env:
     #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-   # AWS_REGION: ${{ vars.AWS_REGION }}
+    BASE_IMAGE_NAME: "frontendApp"
+    AWS_REGION: ${{ vars.AWS_REGION }}
     ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_FRONTEND}}
     REACT_APP_MOVIE_API_URL: $${{vars.REACT_APP_MOVIE_API_URL}}
 
@@ -52,7 +53,14 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.aws-setup.outputs.ecr_registry }}
           IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
-        run: cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        run: |
+        #cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        cd starter/frontend 
+        docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t IMAGE_TAG .
+
+
+        
+       # --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
          #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }} -f .
 
@@ -62,10 +70,15 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           
-          IMAGE_TAG: ${{ steps.git-sha.outputs.sha_short }}
+          IMAGE_TAG: ${{BASE_IMAGE_NAME}} - ${{ steps.git-sha.outputs.sha_short }}
         run: |
           #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }} -f .
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY #Authenticate to an Amazon ECR registry
+         #docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
        
       #- name: Deploy to EKS Cluster
        # run: 
