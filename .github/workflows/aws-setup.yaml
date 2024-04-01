@@ -4,7 +4,7 @@ on:
   workflow_call:
     # Map the workflow outputs to job outputs
     outputs:
-      registry:
+      ecr_registry:
         description: "AWS ECR Registry"
         value: ${{ jobs.configureAWS.outputs.registry }}
   
@@ -30,7 +30,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
