@@ -67,7 +67,7 @@ jobs:
         env: 
           IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
           ECR_REGISTRY: ${{steps.aws-setup.outputs.ecr_registry }}
-        run: echo  $ECR_REGISTRY
+        run: echo  docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t ${{ECR_REGISTRY}}/${{ECR_REPOSITORY}}:$IMAGE_TAG .
 
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
         #if: github.ref == 'refs/heads/main'
@@ -75,7 +75,7 @@ jobs:
           ECR_REGISTRY: ${{steps.aws-setup.outputs.ecr_registry }}
           #IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
           IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t ${{ECR_REGISTRY}}/${{ECR_REPOSITORY}}:$IMAGE_TAG .
 
         #cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         
