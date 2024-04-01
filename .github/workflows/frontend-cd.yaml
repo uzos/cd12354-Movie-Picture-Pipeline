@@ -57,7 +57,7 @@ jobs:
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
         #if: github.ref == 'refs/heads/main'
         env:
-          ECR_REGISTRY: ${{ jobs.configure-aws.outputs.ecr_registry }}
+          ECR_REGISTRY: ${{configure-aws.outputs.ecr_registry }}
           IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
         run: docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
