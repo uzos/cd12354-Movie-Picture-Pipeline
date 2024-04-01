@@ -43,6 +43,8 @@ jobs:
       #- name: AWS Setup
         #id: aws-setup
       # uses: ./.github/workflows/aws-setup.yaml
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - name: Configure AWS credentials
         id: aws-setup
         uses: ./.github/actions/configure-aws-credentials
