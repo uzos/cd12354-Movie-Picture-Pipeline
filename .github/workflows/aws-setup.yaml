@@ -20,6 +20,8 @@ env:
 
 # Jobs defined in the workflow
 jobs:
+  aws-setup-job:
+    runs-on: ubuntu-latest
 
   steps:
     - name: Checkout repository
