@@ -1,39 +1,36 @@
-# Workflow name
-name: AWS Login Workflow
+name: AWS setup Workflow
 
-# Triggers for the workflow
 on:
-  
   workflow_call:
     # Map the workflow outputs to job outputs
-  
-    outputs: 
-      ecr_registry:
-        description: "Shot Got Sha"
-        value: ${{ steps.login-ecr.outputs.registry }}
-
-env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    AWS_REGION: ${{ secrets.AWS_REGION }}
+    outputs:
+      registry:
+        description: "AWS ECR Registry"
+        value: ${{ jobs.configureAWS.outputs.registry }}
   
 
-# Jobs defined in the workflow
 jobs:
-  aws-setup-job:
+  configureAWS:
     runs-on: ubuntu-latest
+    outputs:
+      registry: ${{ steps.login-ecr.outputs.registry }}
+    steps:
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Print message - ECR_REPOSITORY_FRONTEND
+        run: echo ${{ vars.ECR_REPOSITORY_FRONTEND}}
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
-
-
-
-    
+      - name: Print message - AI
+        run: echo  ${{ env.AWS_REGION}}
+      - name: Print message - Google
+        run: echo  ${{vars.AWS_REGION}}
+  
+  
+      - name: AWS Set up
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
