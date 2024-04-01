@@ -24,19 +24,17 @@ jobs:
   aws-setup-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
-      #Login to AWS using secrets
-      - name: AWS Login
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+          role-to-assume: arn:aws:iam::myawsid:role/github-actions-ecr-push
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: actions/checkout@v3
+      - name: Publish image to ECR
+        run: |
+          echo "Hello"
 
 
 
