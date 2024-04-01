@@ -59,7 +59,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.aws-setup.outputs.ecr_registry }}
           IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
-        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t $IMAGE_TAG .
+        run: docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} -t ${{env.BASE_IMAGE_NAME}}:latest .
 
         #cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         
