@@ -65,7 +65,7 @@ jobs:
       - name: Print message -  IMAGE_TAG
         #run: echo  ${{call-frontend-cd-lint-and-test-job.outputs.sha_short}}
         env: 
-          IMAGE_TAG: ${{env.BASE_IMAGE_NAME}} - ${{ needs.call-frontend-cd-lint-and-test-job.outputs.sha_short }}
+          IMAGE_TAG: ${{env.BASE_IMAGE_NAME}} - ${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
         run: echo  $IMAGE_TAG
 
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
