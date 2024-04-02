@@ -111,7 +111,7 @@ jobs:
        
       #- name: Deploy to EKS Cluster
        # run: 
-       - name: Deploy to EKS Cluster
-          run: |
-            echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-            kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
+      - name: Deploy to EKS Cluster
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
+          kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
