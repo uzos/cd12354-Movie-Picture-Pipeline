@@ -1,0 +1,50 @@
+name: Reusable Frondend Lint and Test Workflow
+
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      sha_short:
+        description: "Shot Got Sha"
+        value: ${{ jobs.reusable-lint-and-test-job.outputs.sha_short }}
+  
+
+jobs:
+  reusable-lint-and-test-job:
+    runs-on: ubuntu-latest
+    outputs:
+      sha_short: ${{ steps.git-sha.outputs.sha_short }}
+    steps:
+
+      - name: Print message - ECR_REPOSITORY_FRONTEND
+        run: echo ${{ vars.ECR_REPOSITORY_FRONTEND}}
+
+      - name: Print message - AI
+        run: echo  ${{ env.AWS_REGION}}
+      - name: Print message - Google
+        run: echo  ${{vars.AWS_REGION}}
+    
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up Node.js 
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Get Git Sha
+        id: git-sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+       # Install the dependencies.
+      - name: Install the dependencies
+        run:  cd starter/frontend && npm ci
+
+      # Run the linter.
+      - name: Run the linter
+        run:  cd starter/frontend && npm run lint
+       
+      # Run the tests.
+      - name: Run tests
+        run: cd starter/frontend && npm test
