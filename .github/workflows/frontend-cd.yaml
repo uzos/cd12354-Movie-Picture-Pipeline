@@ -79,7 +79,7 @@ jobs:
         run: |
           echo kubectl version
 
-          aws eks update-Kubeconfig --name cluster --region ${{env.AWS_REGION}}
+          aws eks update-kubeconfig --name cluster --region ${{env.AWS_REGION}}
           ./setup/init.sh
           cd starter/frontend/k8s
           #echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
