@@ -78,6 +78,8 @@ jobs:
       #- name: Deploy to EKS Cluster
       - name: Print set Variable - GITHUB_ENV-IMAGE_TAG
         run: echo $IMAGE_TAG
+      - name: Print set Variable - GITHUB_ENV-ECR_REGISTRY
+        run: echo $ECR_REGISTRY
      
 
        # run: 
@@ -93,7 +95,7 @@ jobs:
           # kustomize edit set image frontend=
           # aws eks update-kubeconfig`
          
-          kustomize edit set image frontend=${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}}
+          kustomize edit set image frontend=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
 
           /# Apply the manifests to the cluster
           kustomize build | kubectl apply -f -
