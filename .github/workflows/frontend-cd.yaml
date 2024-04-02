@@ -42,7 +42,7 @@ jobs:
 
   
   frontend-cd-build-job:
-    #if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
 
     #if: github.event.pull_request.merged == true && ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
     needs: frontend-cd-lint-and-test-job #dependent job
@@ -112,6 +112,6 @@ jobs:
       #- name: Deploy to EKS Cluster
        # run: 
        - name: Deploy to EKS Cluster
-        run: |
-          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-          kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
+          run: |
+            echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
+            kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
