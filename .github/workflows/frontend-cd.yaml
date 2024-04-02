@@ -77,6 +77,8 @@ jobs:
        # run: 
       - name: Deploy to EKS Cluster
         run: |
+          echo kubectl version
+          cd starter/frontend/k8s
           ./setup/init.sh
           #echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
           #kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
