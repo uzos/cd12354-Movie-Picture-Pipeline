@@ -98,7 +98,7 @@ jobs:
          
           kustomize edit set image frontend=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
 
-          /# Apply the manifests to the cluster
+          # Apply the manifests to the cluster
           kustomize build | kubectl apply -f -
 
        
