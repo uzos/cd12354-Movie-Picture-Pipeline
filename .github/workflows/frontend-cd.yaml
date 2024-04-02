@@ -75,27 +75,24 @@ jobs:
 
       #- name: Deploy to EKS Cluster
 
-         #Configure AWS credentials
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          #role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
-          aws-access-key-id: ${{ secrets.SUPER_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.SUPER_AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.SUPER_AWS_SESSION_TOKEN }}
-          aws-region:  ${{env.AWS_REGION}}
-          mask-aws-account-id: 'false'
+     
 
        # run: 
       - name: Deploy to EKS Cluster
         run: |
-          echo kubectl version
+          
 
           aws eks update-kubeconfig --name cluster --region ${{env.AWS_REGION}}
-          ./setup/init.sh
+          #./setup/init.sh
           cd starter/frontend/k8s
           #echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
           #kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
           # kustomize edit set image frontend=
+          # aws eks update-kubeconfig`
+         
+          kustomize edit set image frontend=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
+
+          /# Apply the manifests to the cluster
+          kustomize build | kubectl apply -f -
 
        

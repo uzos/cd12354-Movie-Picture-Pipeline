@@ -48,3 +48,9 @@ jobs:
       # Run the tests.
       - name: Run tests
         run: cd starter/frontend && npm test
+
+      # Run the tests.
+      - name: Simulate fail test coverage
+        run: cd starter/frontend && FAIL_TEST=true CI=true npm test
+
+      
