@@ -82,7 +82,7 @@ jobs:
           #role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
           aws-access-key-id: ${{ secrets.SUPER_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.SUPER_AWS_SECRET_ACCESS_KEY }}
-          aws_session_token: ${{ secrets.SUPER_AWS_SESSION_TOKEN }}
+          aws-session-token: ${{ secrets.SUPER_AWS_SESSION_TOKEN }}
           aws-region:  ${{env.AWS_REGION}}
           mask-aws-account-id: 'false'
 
