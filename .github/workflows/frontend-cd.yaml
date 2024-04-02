@@ -42,7 +42,7 @@ jobs:
 
   
   frontend-cd-build-job:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
 
     #if: github.event.pull_request.merged == true && ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
     needs: frontend-cd-lint-and-test-job #dependent job
@@ -73,7 +73,7 @@ jobs:
         env: 
           IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
           ECR_REGISTRY: ${{steps.aws-setup.outputs.ecr_registry }}
-        run: echo  $ECR_REGISTRY
+        run: echo  ${{github.event.workflow_run.conclusion}}
 
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
         #if: github.ref == 'refs/heads/main'
