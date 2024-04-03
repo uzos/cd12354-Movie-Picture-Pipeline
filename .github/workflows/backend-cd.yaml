@@ -19,7 +19,7 @@ on:
 
 env:
   
-    BASE_IMAGE_NAME: "backendapp"
+    BASE_IMAGE_NAME: "backend"
     AWS_REGION: ${{ vars.AWS_REGION }}
     ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_FRONTEND}}
     REACT_APP_MOVIE_API_URL: $${{vars.REACT_APP_MOVIE_API_URL}}
