@@ -1,5 +1,5 @@
 
-name: Pull Request Target
+name: Merge Request Notification
 on:
   pull_request_target:
     types: [closed]
