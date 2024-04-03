@@ -44,15 +44,20 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
 
-       #Configure AWS credentials
+        #Configure AWS credentials and Login to ECR
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        id: aws-setup
+        uses: ./.github/actions/configure-aws-credentials
         with:
-          
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:  ${{env.AWS_REGION}}
-          mask-aws-account-id: 'false'
+          aws-region: ${{vars.AWS_REGION}} 
+
+      - name: Print ECR_REGISTRY
+        run: echo ${{steps.aws-setup.outputs.ecr_registry }}
+
+      - name: Print IMAGE_ID
+        run: echo $${{needs.frontend-cd-lint-and-test-job.outputs.sha_short}}
 
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
        
@@ -64,7 +69,5 @@ jobs:
           cd starter/frontend 
           docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG .
      
-      
-    outputs:
-      registry: ${{ steps.login-ecr.outputs.registry }}
+    
    

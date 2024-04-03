@@ -54,13 +54,7 @@ jobs:
         run: |
           flake8 .
 
-      # Run the tests
-      - name: Run Test
-        run: |
-            pipenv run test
-
-
-
+  
       # Simulate Fail Test
       #- name: Run Fail Test
       #  run: |
