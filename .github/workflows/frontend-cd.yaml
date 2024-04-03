@@ -13,9 +13,13 @@ on:
       - completed
 
   # Automatic trigger on pull request event against main branch is closed (i.e )
-  pull_request:
-    types:
-      - closed
+  #pull_request:
+   # types:
+    #  - closed
+    #branches: 
+    #  - main
+  push:
+   
     branches: 
       - main
 

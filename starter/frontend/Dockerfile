@@ -10,13 +10,10 @@ RUN mkdir -p src
 # Copy dependdency files
 COPY package*.json .
 
-#Option 1
-#COPY public /app/
-#COPY src /app/
-#Option 2
+
 COPY src/ /app/src/
 COPY public/ /app/public/
-RUN ls -lrt /app/public
+
 # Install packages
 RUN npm ci
 

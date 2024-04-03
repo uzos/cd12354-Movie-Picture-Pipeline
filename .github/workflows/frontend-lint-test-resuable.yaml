@@ -6,14 +6,13 @@ on:
     outputs:
       sha_short:
         description: "Shot Got Sha"
-        value: ${{ jobs.reusable-lint-and-test-job.outputs.sha_short }}
+        value: ${{ jobs.frontend-test-job.outputs.sha_short }}
   
 
 jobs:
-  frontend-lint-and-test-job:
+  frontend-lint-job:
     runs-on: ubuntu-latest
-    outputs:
-      sha_short: ${{ steps.github-sha.outputs.sha_short }}
+ 
     steps:
 
 
@@ -37,12 +36,40 @@ jobs:
       - name: Run the linter
         run:  cd starter/frontend && npm run lint
        
+  
+
+
+  frontend-test-job:
+    runs-on: ubuntu-latest
+    outputs:
+      sha_short: ${{ steps.github-sha.outputs.sha_short }}
+    steps:
+
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up Node.js 
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Get Git Sha
+        id: github-sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+       # Install the dependencies.
+      - name: Install the dependencies
+        run:  cd starter/frontend && npm ci
+
+       
       # Run the tests.
       - name: Run tests
         run: cd starter/frontend && npm test
 
-      # Run the tests.
-      #- name: Simulate fail test coverage
+      #Simulate fail test coverage
       # run: cd starter/frontend && FAIL_TEST=true CI=true npm test
+
+
 
       
