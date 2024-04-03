@@ -42,9 +42,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-
-
-     
         #Configure AWS credentials and Login to ECR
       - name: Configure AWS credentials
         id: aws-setup

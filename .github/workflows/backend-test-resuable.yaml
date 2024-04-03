@@ -48,19 +48,19 @@ jobs:
           pip install flake8
    
 
-      # Run code qulaity test
+      # Run code quality test
       - name: Run Flake8
         run: |
           flake8 .
 
       # Run the tests
-       #- name: Run Flake8
-        #run: |
-         # pipenv run test
+      - name: Run Test
+          run: |
+            pipenv run test
 
 
 
-         # Simulate Fail Test
-      - name: Run Fail Test
-        run: |
-          FAIL_TEST=true pipenv run test
+      # Simulate Fail Test
+      #- name: Run Fail Test
+      #  run: |
+      #    FAIL_TEST=true pipenv run test
