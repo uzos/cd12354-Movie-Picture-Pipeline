@@ -6,6 +6,7 @@ name: Frontend Continuous Deployment
 on:
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
+  # Trigger only when Frontend Continuous Integration is completed
   workflow_run:
     workflows: ["Frontend Continuous Integration"]
     types:
@@ -19,20 +20,17 @@ on:
       - main
 
 
-
-  
-
 env:
   
-    BASE_IMAGE_NAME: "frontend"
+    BASE_IMAGE_NAME: "backend"
     AWS_REGION: ${{ vars.AWS_REGION }}
-    ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_FRONTEND}}
-    REACT_APP_MOVIE_API_URL: $${{vars.REACT_APP_MOVIE_API_URL}}
+    ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_BACKEND}}
+   
 
 # Jobs defined in the workflow
 jobs:
   frontend-cd-lint-and-test-job:
-    uses: ./.github/workflows/frontend-lint-test-resuable.yaml #Invoke reusable Frontend Lint and Test workflow
+    uses: ./.github/workflows/frontend-lint-test-resuable.yaml #Invoke reusable Backend Lint and Test workflow
 
   frontend-cd-build-job:
     #if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
@@ -51,11 +49,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{vars.AWS_REGION}}  # Specify your desired AWS region
+          aws-region: ${{vars.AWS_REGION}}  
      
-  
-
-   
 
       - name: Print message -  IMAGE_TAG
         env: 
@@ -91,11 +86,7 @@ jobs:
           aws eks update-kubeconfig --name cluster --region ${{env.AWS_REGION}}
           #./setup/init.sh
           cd starter/frontend/k8s
-          #echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-          #kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
-          # kustomize edit set image frontend=
-          # aws eks update-kubeconfig`
-         
+       
           kustomize edit set image frontend=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
 
           # Apply the manifests to the cluster

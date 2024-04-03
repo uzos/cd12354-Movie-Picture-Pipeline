@@ -10,20 +10,12 @@ on:
   
 
 jobs:
-  reusable-lint-and-test-job:
+  frontend-lint-and-test-job:
     runs-on: ubuntu-latest
     outputs:
-      sha_short: ${{ steps.git-sha.outputs.sha_short }}
+      sha_short: ${{ steps.github-sha.outputs.sha_short }}
     steps:
 
-      - name: Print message - ECR_REPOSITORY_FRONTEND
-        run: echo ${{ vars.ECR_REPOSITORY_FRONTEND}}
-
-      - name: Print message - AI
-        run: echo  ${{ env.AWS_REGION}}
-      - name: Print message - Google
-        run: echo  ${{vars.AWS_REGION}}
-    
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,7 +26,7 @@ jobs:
           node-version: latest
 
       - name: Get Git Sha
-        id: git-sha
+        id: github-sha
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
        # Install the dependencies.
