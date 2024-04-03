@@ -57,7 +57,7 @@ jobs:
       # Run the tests
       - name: Run Test
         run: |
-            run test
+            pipenv run test
 
 
 
