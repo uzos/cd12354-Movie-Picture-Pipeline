@@ -53,6 +53,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{vars.AWS_REGION}} 
 
+      - name: Print ECR_REGISTRY
+        run: echo ${{steps.aws-setup.outputs.ecr_registry }}
+
+      - name: Print IMAGE_ID
+        run: echo $${{needs.frontend-cd-lint-and-test-job.outputs.sha_short}}
+
       - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
        
         env:
