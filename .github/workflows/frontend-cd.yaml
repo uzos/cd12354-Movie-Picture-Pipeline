@@ -6,41 +6,36 @@ name: Frontend Continuous Deployment
 on:
   # Manual trigger using the workflow_dispatch event
   workflow_dispatch:
+  # Trigger only when Frontend Continuous Integration is completed
   workflow_run:
     workflows: ["Frontend Continuous Integration"]
     types:
       - completed
 
   # Automatic trigger on pull request event against main branch is closed (i.e )
-  pull_request:
-    types:
-      - closed
+  #pull_request:
+   # types:
+    #  - closed
+    #branches: 
+    #  - main
+  push:
+   
     branches: 
       - main
 
 
-
-  
-
 env:
-    #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    BASE_IMAGE_NAME: "frontendapp"
+  
+    BASE_IMAGE_NAME: "backend"
     AWS_REGION: ${{ vars.AWS_REGION }}
-    ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_FRONTEND}}
-    REACT_APP_MOVIE_API_URL: $${{vars.REACT_APP_MOVIE_API_URL}}
+    ECR_REPOSITORY: ${{vars.ECR_REPOSITORY_BACKEND}}
+   
 
 # Jobs defined in the workflow
 jobs:
   frontend-cd-lint-and-test-job:
-    uses: ./.github/workflows/frontend-lint-test-resuable.yaml
-  #configure-aws:
-        #id: aws-setup
-  # uses: ./.github/workflows/aws-setup.yaml
-  
+    uses: ./.github/workflows/frontend-lint-test-resuable.yaml #Invoke reusable Backend Lint and Test workflow
 
-
-  
   frontend-cd-build-job:
     #if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
 
@@ -52,66 +47,46 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+
+
+     
+        #Configure AWS credentials and Login to ECR
       - name: Configure AWS credentials
         id: aws-setup
         uses: ./.github/actions/configure-aws-credentials
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{vars.AWS_REGION}}  # Specify your desired AWS region
-     
-  
+          aws-region: ${{vars.AWS_REGION}} 
+    
 
-      #Setup docker 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Print message -  IMAGE_TAG
-        env: 
-          IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
-          ECR_REGISTRY: ${{steps.aws-setup.outputs.ecr_registry }}
-        run: echo  ${{github.event.workflow_run.conclusion}}
-
-      - name: Build docker frontend image #Tag the built docker image with the git sha (use GitHub Context)
-        #if: github.ref == 'refs/heads/main'
+    
+      - name: Build, Tag and Push image to Amazon ECR #Tag the built docker image with the git sha (use GitHub Context)
         env:
           ECR_REGISTRY: ${{steps.aws-setup.outputs.ecr_registry }}
-          #ECR_REGISTRY: 074416719468.dkr.ecr.us-east-1.amazonaws.com
-          #IMAGE_TAG: ${{needs.call-frontend-cd-lint-and-test-job.outputs.sha_short}}
           IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.frontend-cd-lint-and-test-job.outputs.sha_short }}
-        run: cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG .
-
-        #cd starter/frontend && docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        
-
-        
-       # --tag=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-
-         #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }} -f .
-
-   
-
-      - name: Push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          
-          IMAGE_TAG: ${{env.BASE_IMAGE_NAME}}-${{ needs.call-frontend-cd-lint-and-test-job.outputs.sha_short }}
-        run: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY #Authenticate to an Amazon ECR registry
-          #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.vars.outputs.sha_short }} -f .
-          #---
-          #aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY #Authenticate to an Amazon ECR registry
-         #docker build -t $IMAGE_TAG .
-          #docker tag $IMAGE_TAG:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-          #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-       
-      #- name: Deploy to EKS Cluster
-       # run: 
-      - name: Deploy to EKS Cluster
         run: |
-          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-          kubectl apply -f deployment.yml --kubeconfig=kubeconfig.yaml
+          cd starter/frontend 
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}} --tag=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG . 
+          docker push $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
+
+          echo IMAGE_TAG=$IMAGE_TAG >> $GITHUB_ENV
+          echo ECR_REGISTRY=$ECR_REGISTRY >> $GITHUB_ENV
+
+
+      #Deploy to EKS Cluster
+   
+      - name: EKS Cluster
+        run: |
+          
+          aws eks update-kubeconfig --name cluster --region ${{env.AWS_REGION}}
+          #./setup/init.sh
+          cd starter/frontend/k8s
+       
+          kustomize edit set image frontend=$ECR_REGISTRY/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
+
+          # Apply the manifests to the cluster
+          kustomize build | kubectl apply -f -
+
+       
