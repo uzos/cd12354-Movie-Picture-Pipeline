@@ -1,6 +1,6 @@
 # Workflow name
 name: Frontend Continuous Deployment
-#needs: [frontend-cd-test-and-build]
+
 
 # Triggers for the workflow
 on:
@@ -12,12 +12,7 @@ on:
     types:
       - completed
 
-  # Automatic trigger on pull request event against main branch is closed (i.e )
-  #pull_request:
-   # types:
-    #  - closed
-    #branches: 
-    #  - main
+
   push:
    
     branches: 
@@ -37,9 +32,8 @@ jobs:
     uses: ./.github/workflows/frontend-lint-test-resuable.yaml #Invoke reusable Backend Lint and Test workflow
 
   frontend-cd-build-job:
-    #if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
 
-    #if: github.event.pull_request.merged == true && ${{ github.event.workflow_run.conclusion == 'success' }} # Job execute after dependent job complete successfully
     needs: frontend-cd-lint-and-test-job #dependent job
     
     runs-on: ubuntu-latest
@@ -48,9 +42,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-
-
-     
         #Configure AWS credentials and Login to ECR
       - name: Configure AWS credentials
         id: aws-setup
