@@ -12,7 +12,6 @@ on:
 
   # Automatic trigger on pull request event against main branch is closed /merged
   push:
-   
     branches: 
       - main
 

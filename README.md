@@ -464,7 +464,21 @@ kustomize edit set image backend=<ECR_REPO_URL>:<NEW_TAG_HERE>
 
 # Apply the manifests to the cluster
 kustomize build | kubectl apply -f -
+
+
 ```
+
+### Frontend URL
+```bash
+http://a5624fbbc4a0c4b40ae15d2d10c1265e-1513331318.us-east-1.elb.amazonaws.com
+```
+
+
+### Backend URL
+```bash
+http://ac90dc5c2d30046e990c3234a645dc8f-1160486955.us-east-1.elb.amazonaws.com/movies
+```
+
 
 ## License
 
