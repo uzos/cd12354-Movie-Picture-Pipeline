@@ -57,7 +57,7 @@ jobs:
       # Run the tests
       - name: Run Test
         run: |
-            pipenv run test
+             FAIL_TEST=false pipenv run test
 
 
 
